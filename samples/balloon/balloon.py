@@ -75,6 +75,20 @@ class BalloonConfig(Config):
     DETECTION_MIN_CONFIDENCE = 0.9
 
 
+
+
+################################
+# Where are the .add_image and .add_class coming from?
+# It inherites the classes from the utils.py
+
+###############################
+
+
+
+
+
+
+
 ############################################################
 #  Dataset
 ############################################################
@@ -91,6 +105,7 @@ class BalloonDataset(utils.Dataset):
 
         # Train or validation dataset?
         assert subset in ["train", "val"]
+        # assert condition, tell the program to test that condition, and immediately trigger an error if the condition is false
         dataset_dir = os.path.join(dataset_dir, subset)
 
         # Load annotations
@@ -116,6 +131,7 @@ class BalloonDataset(utils.Dataset):
         # annotations. Skip unannotated images.
         annotations = [a for a in annotations if a['regions']]
 
+
         # Add images
         for a in annotations:
             # Get the x, y coordinaets of points of the polygons that make up
@@ -130,6 +146,8 @@ class BalloonDataset(utils.Dataset):
             # load_mask() needs the image size to convert polygons to masks.
             # Unfortunately, VIA doesn't include it in JSON, so we must read
             # the image. This is only managable since the dataset is tiny.
+
+            # Read the image shapes and conver to a mask
             image_path = os.path.join(dataset_dir, a['filename'])
             image = skimage.io.imread(image_path)
             height, width = image.shape[:2]
@@ -140,6 +158,9 @@ class BalloonDataset(utils.Dataset):
                 path=image_path,
                 width=width, height=height,
                 polygons=polygons)
+
+
+
 
     def load_mask(self, image_id):
         """Generate instance masks for an image.
